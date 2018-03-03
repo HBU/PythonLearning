@@ -143,51 +143,51 @@ init = tf.global_variables_initializer()
 ####################################################################
 
 # =============================================================================
-with tf.Session() as sess:
-    sess.run(init)
-    #saver.restore(sess,"model.ckpt-12")
-    for epoch in range(1,20):
-        for batch in range(int(n_batch)):
-            batch_x = train_images[batch*batch_size:(batch+1)*batch_size]
-            batch_y = train_labels[batch*batch_size:(batch+1)*batch_size]
-
-            sess.run(train_step_1,feed_dict = {x:batch_x,y:batch_y,keep_prob:0.5})
-
-        accuracy_n = sess.run(accuracy,feed_dict={x:validation_images, y:validation_labels,keep_prob:1.0})
-        print("Num:" + str(epoch+1) +",accuracy:"+str(accuracy_n))
-
-        #30
-        global_step.assign(epoch).eval()
-        saver.save(sess,"./model.ckpt",global_step = global_step)
-# =============================================================================
-
-#
 # with tf.Session() as sess:
 #     sess.run(init)
+#     #saver.restore(sess,"model.ckpt-12")
+#     for epoch in range(1,20):
+#         for batch in range(int(n_batch)):
+#             batch_x = train_images[batch*batch_size:(batch+1)*batch_size]
+#             batch_y = train_labels[batch*batch_size:(batch+1)*batch_size]
 #
-#     # =============================================================================
-#     #     module_file = tf.train.latest_checkpoint('model-1.ckpt-19') #ckpt路径抽调出来
-#     #     print(module_file)
-#     #     if module_file is not None:          # 添加一个判断语句，判断ckpt的路径文件
-#     #         saver.restore(sess, module_file)
-#     # =============================================================================
-#     saver.restore(sess, "model-1.ckpt-19")
+#             sess.run(train_step_1,feed_dict = {x:batch_x,y:batch_y,keep_prob:0.5})
 #
-#     test_x = np.array(test, dtype=np.float32)
+#         accuracy_n = sess.run(accuracy,feed_dict={x:validation_images, y:validation_labels,keep_prob:1.0})
+#         print("Num:" + str(epoch+1) +",accuracy:"+str(accuracy_n))
 #
-#     conv_y_preditct = y_conv.eval(feed_dict={x: test_x[1:100, :], keep_prob: 1.0})
-#
-#     conv_y_preditct_all = list()
-#
-#     for i in np.arange(100, 28001, 100):
-#         conv_y_preditct = y_conv.eval(feed_dict={x: test_x[i - 100:i, :], keep_prob: 1.0})
-#         test_pred = np.argmax(conv_y_preditct, axis=1)
-#         conv_y_preditct_all = np.append(conv_y_preditct_all, test_pred)
-#
-#     submission = pd.DataFrame({"ImageId": range(1, 28001), "Label": np.int32(conv_y_preditct_all)})
-#     submission.to_csv("submission.csv", index=False)
+#         #30
+#         global_step.assign(epoch).eval()
+#         saver.save(sess,"./model.ckpt",global_step = global_step)
+# =============================================================================
 
-    # print('end')
+
+with tf.Session() as sess:
+    sess.run(init)
+
+    # =============================================================================
+    #     module_file = tf.train.latest_checkpoint('model-1.ckpt-19') #ckpt路径抽调出来
+    #     print(module_file)
+    #     if module_file is not None:          # 添加一个判断语句，判断ckpt的路径文件
+    #         saver.restore(sess, module_file)
+    # =============================================================================
+    saver.restore(sess, "model.ckpt-19")
+
+    test_x = np.array(test, dtype=np.float32)
+
+    conv_y_preditct = y_conv.eval(feed_dict={x: test_x[1:100, :], keep_prob: 1.0})
+
+    conv_y_preditct_all = list()
+
+    for i in np.arange(100, 28001, 100):
+        conv_y_preditct = y_conv.eval(feed_dict={x: test_x[i - 100:i, :], keep_prob: 1.0})
+        test_pred = np.argmax(conv_y_preditct, axis=1)
+        conv_y_preditct_all = np.append(conv_y_preditct_all, test_pred)
+
+    submission = pd.DataFrame({"ImageId": range(1, 28001), "Label": np.int32(conv_y_preditct_all)})
+    submission.to_csv("submission.csv", index=False)
+
+    print('end')
 
 
 
